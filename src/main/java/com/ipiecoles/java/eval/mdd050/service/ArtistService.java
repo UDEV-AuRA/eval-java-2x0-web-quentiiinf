@@ -1,5 +1,9 @@
 package com.ipiecoles.java.eval.mdd050.service;
 
+import com.ipiecoles.java.eval.mdd050.exceptions.ConflictException;
+import com.ipiecoles.java.eval.mdd050.exceptions.IncorrectParameterException;
+import com.ipiecoles.java.eval.mdd050.exceptions.NotFoundException;
+import com.ipiecoles.java.eval.mdd050.exceptions.NullPropertyException;
 import com.ipiecoles.java.eval.mdd050.model.Artist;
 import com.ipiecoles.java.eval.mdd050.repository.ArtistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +32,7 @@ public class ArtistService
             return artistRepository.findById(id);
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
+        throw new NotFoundException("Artist not found");
     }
 
     public Page<Artist> getAllArtists(int page, int size, String sortProperty, String sortDirection, String name) {
@@ -40,7 +44,7 @@ public class ArtistService
         } else if (sortDirection.equalsIgnoreCase("DESC")) {
             pageable = PageRequest.of(page, size, Sort.by(sortProperty).descending());
         } else {
-            throw new RuntimeException("Parameter SortDirection must have a value of ASC or DESC");
+            throw new IncorrectParameterException("Parameter SortDirection must have a value of ASC or DESC");
         }
 
         if(name == null) {
@@ -53,13 +57,13 @@ public class ArtistService
     public Artist addArtist(Artist artist) {
 
         if (artist.isNullName() || artist.getName().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't add an album without name");
+            throw new NullPropertyException("Can't add an album without name");
         }
 
         Optional<Artist> artistsPresent = artistRepository.findByName(artist.getName());
 
         if (artistsPresent.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Artist with this name already exists");
+            throw new ConflictException("Artist with this name already exists");
         }
 
         return artistRepository.save(artist);
@@ -71,13 +75,13 @@ public class ArtistService
         Optional<Artist> artistsPresent = artistRepository.findByName(artist.getName());
 
         if (artistsPresent.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Artist with this name already exists");
+            throw new ConflictException("Artist with this name already exists");
         }
 
         Optional<Artist> artistFromDb = artistRepository.findById(id);
 
         if (!artistFromDb.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
+            throw new NotFoundException("Artist not found");
         }
 
         artist.setId(id);
@@ -91,7 +95,7 @@ public class ArtistService
         Optional<Artist> artistFromDb = artistRepository.findById(id);
 
         if (!artistFromDb.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
+            throw new NotFoundException("Artist not found");
         }
 
         artistRepository.delete(artistFromDb.get());

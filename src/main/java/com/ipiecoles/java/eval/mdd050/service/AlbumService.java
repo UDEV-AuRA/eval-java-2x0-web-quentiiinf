@@ -1,5 +1,7 @@
 package com.ipiecoles.java.eval.mdd050.service;
 
+import com.ipiecoles.java.eval.mdd050.exceptions.NotFoundException;
+import com.ipiecoles.java.eval.mdd050.exceptions.NullPropertyException;
 import com.ipiecoles.java.eval.mdd050.model.Album;
 import com.ipiecoles.java.eval.mdd050.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ public class AlbumService {
         Optional<Album> album = albumRepository.findById(id);
 
         if (!album.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Album not found");
+            throw new NotFoundException("Album not found");
         }
 
         albumRepository.delete(album.get());
@@ -28,7 +30,7 @@ public class AlbumService {
     public Album addAlbum(Album album) {
 
         if (album.isNullTitle() || album.getTitle().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't add album without title");
+            throw new NullPropertyException("Can't add album without title");
         }
 
         return albumRepository.save(album);
