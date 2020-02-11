@@ -54,4 +54,8 @@ public class Album {
         this.artist = artist;
     }
 
+    public boolean isNullTitle() {
+        return title == null;
+    }
+
 }

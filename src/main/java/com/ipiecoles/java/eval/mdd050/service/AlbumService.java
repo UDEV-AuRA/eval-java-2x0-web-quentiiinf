@@ -5,6 +5,7 @@ import com.ipiecoles.java.eval.mdd050.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
@@ -12,10 +13,9 @@ import java.util.Optional;
 public class AlbumService {
 
     @Autowired
-    AlbumRepository albumRepository;
+    private AlbumRepository albumRepository;
 
-    public void delAlbum(Integer id)
-    {
+    public void delAlbum(Integer id) {
         Optional<Album> album = albumRepository.findById(id);
 
         if (!album.isPresent()) {
@@ -25,11 +25,9 @@ public class AlbumService {
         albumRepository.delete(album.get());
     }
 
+    public Album addAlbum(Album album) {
 
-    public Album addAlbum(Album album)
-    {
-
-        if (album.getTitle().isEmpty()) {
+        if (album.isNullTitle() || album.getTitle().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't add album without title");
         }
 

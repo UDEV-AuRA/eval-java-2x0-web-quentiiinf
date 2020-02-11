@@ -18,7 +18,7 @@ public class ArtistService
 {
 
     @Autowired
-    ArtistRepository artistRepository;
+    private ArtistRepository artistRepository;
 
     public Optional<Artist> getArtistById(Integer id) {
 
@@ -38,24 +38,21 @@ public class ArtistService
         if (sortDirection.equalsIgnoreCase("ASC")) {
             pageable = PageRequest.of(page, size, Sort.by(sortProperty).ascending());
         } else if (sortDirection.equalsIgnoreCase("DESC")) {
-            pageable = PageRequest.of(page, size, Sort.by(sortProperty).ascending());
+            pageable = PageRequest.of(page, size, Sort.by(sortProperty).descending());
         } else {
             throw new RuntimeException("Parameter SortDirection must have a value of ASC or DESC");
         }
-
 
         if(name == null) {
             return artistRepository.findAll(pageable);
         }
 
         return artistRepository.findByName(pageable, name);
-
-
     }
 
     public Artist addArtist(Artist artist) {
 
-        if (artist.getName().isEmpty()) {
+        if (artist.isNullName() || artist.getName().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't add an album without name");
         }
 
