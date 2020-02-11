@@ -5,9 +5,7 @@ import com.ipiecoles.java.eval.mdd050.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Optional;
 
 @Service
@@ -30,6 +28,11 @@ public class AlbumService {
 
     public Album addAlbum(Album album)
     {
+
+        if (album.getTitle().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't add album without title");
+        }
+
         return albumRepository.save(album);
     }
 

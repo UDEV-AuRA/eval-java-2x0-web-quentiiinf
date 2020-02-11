@@ -55,6 +55,10 @@ public class ArtistService
 
     public Artist addArtist(Artist artist) {
 
+        if (artist.getName().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't add an album without name");
+        }
+
         Optional<Artist> artistsPresent = artistRepository.findByName(artist.getName());
 
         if (artistsPresent.isPresent()) {
