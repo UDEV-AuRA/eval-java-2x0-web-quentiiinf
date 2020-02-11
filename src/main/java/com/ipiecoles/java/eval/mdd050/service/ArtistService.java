@@ -11,9 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -38,8 +36,6 @@ public class ArtistService
     }
 
     public Page<Artist> getAllArtists(int page, int size, String sortProperty, Sort.Direction sortDirection, String name) {
-
-
 
         if(Arrays.stream(Artist.class.getDeclaredFields()).
                 map(Field::getName).
@@ -114,7 +110,6 @@ public class ArtistService
         }
 
         artistRepository.delete(artistFromDb.get());
-
     }
 
 }

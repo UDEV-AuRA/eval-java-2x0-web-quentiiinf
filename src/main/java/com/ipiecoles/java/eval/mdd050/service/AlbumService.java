@@ -5,10 +5,8 @@ import com.ipiecoles.java.eval.mdd050.exceptions.NullPropertyException;
 import com.ipiecoles.java.eval.mdd050.model.Album;
 import com.ipiecoles.java.eval.mdd050.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Optional;
 
 @Service

@@ -3,7 +3,6 @@ package com.ipiecoles.java.eval.mdd050.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Album")
