@@ -34,7 +34,7 @@ public class ArtistController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "5") int size,
             @RequestParam(value = "sortProperty") String sortProperty,
-            @RequestParam(value = "sortDirection") String sortDirection,
+            @RequestParam(value = "sortDirection") Sort.Direction sortDirection,
             @RequestParam(value = "name", required = false) String name
     ) {
         return artistService.getAllArtists(page, size, sortProperty, sortDirection, name);

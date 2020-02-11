@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -35,19 +37,19 @@ public class ArtistService
         throw new NotFoundException("Artist not found");
     }
 
-    public Page<Artist> getAllArtists(int page, int size, String sortProperty, String sortDirection, String name) {
+    public Page<Artist> getAllArtists(int page, int size, String sortProperty, Sort.Direction sortDirection, String name) {
 
-        Pageable pageable;
 
-        if (sortDirection.equalsIgnoreCase("ASC")) {
-            pageable = PageRequest.of(page, size, Sort.by(sortProperty).ascending());
-        } else if (sortDirection.equalsIgnoreCase("DESC")) {
-            pageable = PageRequest.of(page, size, Sort.by(sortProperty).descending());
-        } else {
-            throw new IncorrectParameterException("Parameter SortDirection must have a value of ASC or DESC");
-        }
 
-        if(name == null) {
+        if(Arrays.stream(Artist.class.getDeclaredFields()).
+                map(Field::getName).
+                filter(s -> s.equals(sortProperty)).count() != 1){
+            throw new IncorrectParameterException("La propriété " + sortProperty + " n'existe pas !");
+        };
+
+        Pageable pageable = PageRequest.of(page, size, sortDirection, sortProperty);
+
+        if (name == null) {
             return artistRepository.findAll(pageable);
         }
 
@@ -84,9 +86,22 @@ public class ArtistService
             throw new NotFoundException("Artist not found");
         }
 
-        artist.setId(id);
+        if (artist.isNullName()) {
+            throw new IncorrectParameterException("Can't save artist without name");
+        }
 
-        return artistRepository.save(artist);
+        if (artist.isNullId()) {
+            throw new IncorrectParameterException("ID of artist JSON object is empty or null");
+        }
+
+        if (!artist.getId().equals(artistFromDb.get().getId())) {
+            throw new IncorrectParameterException("Ambiguous ID, ID parameter and artist ID of JSON object are different");
+        }
+
+        Artist newArtist = artistFromDb.get();
+        newArtist.setName(artist.getName());
+
+        return artistRepository.save(newArtist);
     }
 
 

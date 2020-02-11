@@ -57,4 +57,8 @@ public class Artist {
         return name == null;
     }
 
+    public boolean isNullId(){
+        return name == null;
+    }
+
 }
